@@ -1,0 +1,50 @@
+"""
+Kivy Demo Program
+Simple app to demonstrate Kivy GUI basics.
+"""
+
+from kivy.app import App
+from kivy.lang import Builder
+from kivy.uix.button import Button
+from kivy.properties import StringProperty
+
+class KivyDemoApp(App):
+    """KivyDemoApp is a Kivy App for demonstrating GUI basics."""
+    status_text = StringProperty("Enter your name")
+
+    def build(self):
+        """Build the Kivy GUI from the kv file."""
+        self.title = "Kivy Demo"
+        self.root = Builder.load_file('kivy_layout.kv')
+        return self.root
+
+    def handle_greet(self):
+        """Handle greeting button press."""
+        print("Greet")
+        self.status_text = f"Hello {self.root.ids.input_name.text}"
+
+    def handle_clear(self):
+        """Handle clear button press."""
+        print("Clear")
+        self.root.ids.input_name.text = ""
+        self.status_text = "Enter your name"
+
+    def handle_add(self):
+        """Handle adding a button dynamically."""
+        new_name = self.root.ids.input_name.text
+        if new_name == "":
+            self.status_text = "Please enter a name to add."
+            return
+
+        new_button = Button(text=new_name)
+        new_button.bind(on_release=self.press_entry)
+        self.root.ids.names_box.add_widget(new_button)
+        self.root.ids.input_name.text = ""
+        self.status_text = f"Added {new_name}"
+
+    def press_entry(self, instance):
+        """Handle pressing a dynamically created button."""
+        self.status_text = f"You pressed {instance.text}"
+
+
+KivyDemoApp().run()
